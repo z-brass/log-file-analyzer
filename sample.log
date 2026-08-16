@@ -1,0 +1,11 @@
+#| DATE | TIME | LEVEL | MESSAGE | 
+
+# sample logs for building the program
+
+2026-08-16 14:01:23 INFO User admin logged in
+2026-08-16 14:05:47 INFO User zach logged in
+2026-08-16 14:12:31 WARNING Failed login attempt
+2026-08-16 14:13:02 ERROR Failed login attempt
+2026-08-16 14:15:19 INFO User admin logged out
+2026-08-16 14:21:45 WARNING Failed login attempt
+2026-08-16 14:25:11 INFO User zach logged out

@@ -1,5 +1,6 @@
 import re # regex
 from datetime import datetime, timedelta
+from pathlib import Path
 
 ## global variables ##
 info_count = 0
@@ -30,9 +31,10 @@ failed_logins_by_ip = {
 }
 '''
 #########################
+## adding portability for reading the log file ##
+LOG_FILE = Path(__file__).parent / "sample.log"
 
-
-with open("sample.log", "r") as file:
+with open(LOG_FILE, "r") as file:
     for line in file:
 
         if line.startswith("#"):

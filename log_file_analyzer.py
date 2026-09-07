@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 ## functions ##
-## parse_log_line(), log_entries(), build_failed_login_data(), detect_bruce_force(), alerts(), generate_report(), main()
+## parse_log_line(), store_log_entry(), build_failed_login_data(), detect_brute_force(), alerts(), generate_report(), main()
 
 ## dictionary idea ##
 '''
@@ -26,6 +26,7 @@ failed_logins_by_ip = {
 info_count = 0
 warning_count = 0
 error_count = 0
+
 ## max time window before brute force is detected ##
 FIVE_MINS = timedelta(minutes = 5)
 FAILED_ATTEMPT_THRESHOLD = 5
@@ -56,8 +57,6 @@ def parse_log_line(line):
 
     else:
         ip_address = "Unknown"
-
-
 
     ## USERNAMES (finding "user ____" ##
     ## boundary around 'user' > '/s+' = space, one or more times > '/w+' = word character, one or more (captures the username) ##
@@ -96,22 +95,26 @@ def parse_log_line(line):
     else:
         severity = "Unknown"    
 
-## STORING LOG ENTRIES ##
-def log_entries():
-
-    log_entries.append({
+    return {
         "timestamp": timestamp,
         "severity": severity,
         "username": username,
         "ip_address": ip_address,
         "event_message": event_message
-    })
+    }
 
-    if severity == "INFO":
+## STORING LOG ENTRIES ##
+def store_log_entry(entry):
+
+    global info_count, warning_count, error_count
+
+    log_entries.append(entry)
+
+    if entry["severity"] == "INFO":
         info_count += 1
-    elif severity == "WARNING":
+    elif entry["severity"] == "WARNING":
         warning_count += 1
-    elif severity == "ERROR":
+    elif entry["severity"] == "ERROR":
         error_count += 1
 
 ### FAILED LOGINS ###
@@ -129,7 +132,9 @@ def failed_login_data():
             else:
                 failed_logins_by_ip[ip]["count"] += 1
                 failed_logins_by_ip[ip]["timestamps"].append(entry["timestamp"])
+        
 
+def detect_brute_force():
     ## .items() retrieves dictionary items ##
     for ip, data in failed_logins_by_ip.items():
 
@@ -145,23 +150,24 @@ def failed_login_data():
 
 #########################
 ### MAIN ###
+def main():
+    ## adding portability for reading the log file ##
+    LOG_FILE = Path(__file__).parent / "sample.log"
 
-## adding portability for reading the log file ##
-LOG_FILE = Path(__file__).parent / "sample.log"
+    with open(LOG_FILE, "r") as file:
+        for line in file:
+            entry = parse_log_line(line)
 
-with open(LOG_FILE, "r") as file:
-    for line in file:
-        entry = parse_log_line(line)
-
-        if entry is None:
-            continue
+            if entry is None:
+                continue
+            store_log_entry(entry)
 
 
 
 #####################################
 
 
-#print(failed_logins_by_ip)
+main()
 
 
 

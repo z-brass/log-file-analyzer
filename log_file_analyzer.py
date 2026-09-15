@@ -2,8 +2,14 @@ import re # regex
 from datetime import datetime, timedelta
 from pathlib import Path
 
-## functions ##
-## parse_log_line(), store_log_entry(), build_failed_login_data(), detect_brute_force(), alerts(), generate_report(), main()
+## FUNCTION LAYOUT ##
+## parse_log_line()
+## store_log_entry()
+## building_failed_login_data()
+## detect_brute_force()
+## alerts()
+## generate_report()
+## main()
 
 ## dictionary idea ##
 '''
@@ -11,10 +17,10 @@ failed_logins_by_ip = {
     "192.169.1.25": {
         "count": 5,
         "timestamps": [
-        timestamp1,
-        timestamp2,
-        timestamp3,
-        etc...
+            timestamp1,
+            timestamp2,
+            timestamp3,
+            etc...
         ]
     }
 }
@@ -48,7 +54,7 @@ def parse_log_line(line):
         return None
 
     ## IP ADDRESSES ##
-    ## word boundary > 1-3 digits + period > repeat 3 more times > end word boundary
+    ## regex syntax: word boundary > 1-3 digits + period > repeat 3 more times > end word boundary
     ip_match = re.search(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", line) 
 
     if ip_match:
@@ -59,7 +65,7 @@ def parse_log_line(line):
         ip_address = "Unknown"
 
     ## USERNAMES (finding "user ____" ##
-    ## boundary around 'user' > '/s+' = space, one or more times > '/w+' = word character, one or more (captures the username) ##
+    ## boundary around 'user' > '\s+' = space, one or more times > '\w+' = word character, one or more (captures the username) ##
     ## .IGNORECASE debugs an issue in the case where a username might not match due to upper/lowercase characters ##
     ## group() would give us something like "user zach". With '1' as the argument it returns just the username ##
     username_match = re.search(r"\buser\s+(\w+)", line, re.IGNORECASE)
@@ -76,6 +82,7 @@ def parse_log_line(line):
     event_message = " ".join(parts[3:])
 
     ## TIMESTAMPS ##
+    ## What we're parsing: YYYY-MM-DD HH:MM:SS ##
     timestamp_match = re.search(r"\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}", line)
 
     if timestamp_match:
@@ -89,6 +96,7 @@ def parse_log_line(line):
 
 
     ## SEVERITY ##
+    ## '|' is the OR operator in regex ##
     severity_match = re.search(r"\b(INFO|WARNING|ERROR)\b", line)
     if severity_match:
         severity = severity_match.group()
@@ -118,7 +126,7 @@ def store_log_entry(entry):
         error_count += 1
 
 ### FAILED LOGINS ###
-def failed_login_data():
+def building_failed_login_data():
 
     for entry in log_entries:
         if "Failed login attempt" in entry["event_message"]:
@@ -132,8 +140,9 @@ def failed_login_data():
             else:
                 failed_logins_by_ip[ip]["count"] += 1
                 failed_logins_by_ip[ip]["timestamps"].append(entry["timestamp"])
-        
+    return failed_logins_by_ip
 
+## BRUTE FORCE CHECK ##
 def detect_brute_force():
     ## .items() retrieves dictionary items ##
     for ip, data in failed_logins_by_ip.items():
@@ -141,14 +150,13 @@ def detect_brute_force():
         timestamps = data["timestamps"]
 
         for start in range(len(timestamps) - FAILED_ATTEMPT_THRESHOLD + 1):
-            time_diff = timestamps[start + 4] - timestamps[start]
+            time_diff = timestamps[start + FAILED_ATTEMPT_THRESHOLD - 1] - timestamps[start]
 
             if time_diff <= FIVE_MINS:
                 print(
                     f"Potential brute force attempt detected from {ip}: "
-                    f"{data['count']} failed attempts between {timestamps[start]} and {timestamps[start + 4]}")
+                    f"{data['count']} failed attempts between {timestamps[start]} and {timestamps[start + FAILED_ATTEMPT_THRESHOLD - 1]}.")
 
-#########################
 ### MAIN ###
 def main():
     ## adding portability for reading the log file ##
@@ -168,6 +176,9 @@ def main():
 
 
 main()
+
+
+
 
 
 

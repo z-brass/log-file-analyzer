@@ -1,16 +1,151 @@
 #| DATE | TIME | LEVEL | MESSAGE | 
 
-# sample logs for building the program
+# Sample security/application log for testing the Python log analyzer
+# Contains normal activity, warnings, errors, and intentional brute-force patterns.
 
-2026-08-16 14:01:23 INFO User admin logged in from 192.168.1.25
-2026-08-16 14:05:47 INFO User zach logged in from 192.168.1.25
-2026-08-16 14:12:31 WARNING Failed login attempt for user admin from 192.168.1.25
-2026-08-16 14:13:02 ERROR Failed login attempt for user admin from 192.168.1.25
-2026-08-16 14:13:03 ERROR Failed login attempt for user admin from 192.168.1.25
-2026-08-16 14:13:05 ERROR Failed login attempt for user admin from 192.168.1.25
-2026-08-16 14:13:09 ERROR Failed login attempt for user admin from 192.168.1.25
-2026-08-16 14:13:10 ERROR Failed login attempt for user admin from 192.168.1.25
-2026-08-16 14:15:19 INFO User admin logged out from 192.168.1.25
-2026-08-16 14:21:45 WARNING Failed login attempt for user zach from 192.168.1.25
-2026-08-16 14:25:11 INFO User zach logged out from 192.168.1.25
+2026-09-01 08:03:13 INFO User alice logged in successfully from 192.168.1.15
+2026-09-01 08:03:49 ERROR Database connection failed for user admin from 192.168.1.10
+2026-09-01 08:05:29 INFO User charlie accessed dashboard from 192.168.1.25
+2026-09-01 08:06:56 INFO User bob logged in successfully from 10.0.0.12
+2026-09-01 08:10:34 INFO User alice logged in successfully from 192.168.1.15
+2026-09-01 08:13:57 ERROR Database connection failed for user admin from 192.168.1.10
+2026-09-01 08:16:46 INFO User alice logged in successfully from 192.168.1.15
+2026-09-01 08:19:47 INFO User alice updated profile from 192.168.1.15
+2026-09-01 08:20:25 INFO User zach logged in successfully from 192.168.1.10
+2026-09-01 08:21:18 INFO User charlie accessed dashboard from 192.168.1.25
+2026-09-01 08:22:47 WARNING User admin attempted access to restricted resource from 172.16.0.44
+2026-09-01 08:25:51 INFO User zach logged in successfully from 192.168.1.10
+2026-09-01 08:28:44 INFO User charlie accessed dashboard from 192.168.1.25
+2026-09-01 08:32:17 WARNING User charlie authentication token expired from 192.168.1.25
+2026-09-01 08:35:46 WARNING User admin attempted access to restricted resource from 172.16.0.44
+
+2026-09-01 08:38:03 INFO User charlie accessed dashboard from 192.168.1.25
+2026-09-01 08:40:27 WARNING High number of requests detected from 10.0.0.18
+2026-09-01 08:42:08 ERROR User diana failed to access requested resource from 10.0.0.18
+2026-09-01 08:42:39 ERROR User diana failed to access requested resource from 10.0.0.18
+2026-09-01 08:46:35 INFO User bob logged in successfully from 10.0.0.12
+2026-09-01 08:50:03 INFO User alice updated profile from 192.168.1.15
+2026-09-01 08:52:00 INFO User diana downloaded report from 10.0.0.18
+2026-09-01 08:53:09 INFO User charlie accessed dashboard from 192.168.1.25
+2026-09-01 08:56:54 INFO User zach logged out from 192.168.1.10
+2026-09-01 08:57:50 INFO User alice logged in successfully from 192.168.1.15
+2026-09-01 08:59:57 INFO User alice logged in successfully from 192.168.1.15
+2026-09-01 09:01:58 ERROR Authentication service returned an unexpected error from 192.168.1.15
+2026-09-01 09:03:56 WARNING High number of requests detected from 10.0.0.18
+2026-09-01 09:05:33 ERROR User diana failed to access requested resource from 10.0.0.18
+2026-09-01 09:06:14 ERROR Database connection failed for user admin from 192.168.1.10
+2026-09-01 09:08:41 WARNING User admin attempted access to restricted resource from 172.16.0.44
+2026-09-01 09:09:42 INFO User alice updated profile from 192.168.1.15
+2026-09-01 09:10:32 WARNING User admin attempted access to restricted resource from 172.16.0.44
+2026-09-01 09:12:17 ERROR Authentication service returned an unexpected error from 192.168.1.15
+2026-09-01 09:15:27 WARNING High number of requests detected from 10.0.0.18
+2026-09-01 09:17:29 WARNING High number of requests detected from 10.0.0.18
+2026-09-01 09:18:48 ERROR Database connection failed for user admin from 192.168.1.10
+2026-09-01 09:19:35 INFO User zach logged in successfully from 192.168.1.10
+2026-09-01 09:22:54 INFO User charlie accessed dashboard from 192.168.1.25
+2026-09-01 09:26:41 INFO User diana downloaded report from 10.0.0.18
+2026-09-01 09:27:31 ERROR Authentication service returned an unexpected error from 192.168.1.15
+2026-09-01 09:29:00 ERROR Authentication service returned an unexpected error from 192.168.1.15
+2026-09-01 09:29:55 INFO User alice updated profile from 192.168.1.15
+2026-09-01 09:31:36 INFO User bob accessed dashboard from 10.0.0.12
+2026-09-01 09:34:48 ERROR Authentication service returned an unexpected error from 192.168.1.15
+2026-09-01 09:36:51 INFO User bob logged in successfully from 10.0.0.12
+2026-09-01 09:38:55 INFO User zach logged out from 192.168.1.10
+2026-09-01 09:40:18 WARNING User charlie authentication token expired from 192.168.1.25
+2026-09-01 09:41:56 ERROR Database connection failed for user admin from 192.168.1.10
+2026-09-01 09:45:20 WARNING User charlie authentication token expired from 192.168.1.25
+2026-09-01 09:46:08 WARNING High number of requests detected from 10.0.0.18
+2026-09-01 09:49:20 INFO User bob logged in successfully from 10.0.0.12
+2026-09-01 09:52:06 ERROR Database connection failed for user admin from 192.168.1.10
+2026-09-01 09:53:38 INFO User bob logged in successfully from 10.0.0.12
+2026-09-01 09:56:06 INFO User alice updated profile from 192.168.1.15
+2026-09-01 09:58:06 ERROR Failed login attempt for user admin from 192.168.1.25
+2026-09-01 09:58:41 ERROR Failed login attempt for user admin from 192.168.1.25
+2026-09-01 09:59:16 ERROR Failed login attempt for user admin from 192.168.1.25
+2026-09-01 09:59:51 ERROR Failed login attempt for user admin from 192.168.1.25
+2026-09-01 10:00:26 ERROR Failed login attempt for user admin from 192.168.1.25
+2026-09-01 10:01:01 ERROR Failed login attempt for user admin from 192.168.1.25
+2026-09-01 10:01:36 ERROR Failed login attempt for user admin from 192.168.1.25
+2026-09-01 10:07:55 WARNING User charlie authentication token expired from 192.168.1.25
+2026-09-01 10:09:31 WARNING User charlie authentication token expired from 192.168.1.25
+2026-09-01 10:11:34 ERROR Authentication service returned an unexpected error from 192.168.1.15
+2026-09-01 10:12:28 INFO User charlie accessed dashboard from 192.168.1.25
+2026-09-01 10:13:16 ERROR User diana failed to access requested resource from 10.0.0.18
+2026-09-01 10:15:16 INFO User alice updated profile from 192.168.1.15
+# Routine maintenance event follows
+2026-09-01 10:17:04 INFO User alice logged in successfully from 192.168.1.15
+2026-09-01 10:18:38 WARNING High number of requests detected from 10.0.0.18
+2026-09-01 10:20:38 INFO User charlie accessed dashboard from 192.168.1.25
+2026-09-01 10:23:25 INFO User alice updated profile from 192.168.1.15
+2026-09-01 10:26:02 INFO User bob logged in successfully from 10.0.0.12
+2026-09-01 10:27:49 INFO User bob logged in successfully from 10.0.0.12
+2026-09-01 10:29:32 ERROR Database connection failed for user admin from 192.168.1.10
+2026-09-01 10:32:29 INFO User diana downloaded report from 10.0.0.18
+2026-09-01 10:34:58 WARNING High number of requests detected from 10.0.0.18
+2026-09-01 10:37:20 INFO User zach logged out from 192.168.1.10
+2026-09-01 10:38:56 INFO User bob logged in successfully from 10.0.0.12
+2026-09-01 10:41:46 INFO User bob accessed dashboard from 10.0.0.12
+2026-09-01 10:42:49 ERROR User diana failed to access requested resource from 10.0.0.18
+2026-09-01 10:43:41 ERROR Authentication service returned an unexpected error from 192.168.1.15
+2026-09-01 10:45:41 ERROR Failed login attempt for user zach from 10.0.0.18
+2026-09-01 10:46:31 ERROR Failed login attempt for user zach from 10.0.0.18
+2026-09-01 10:47:21 ERROR Failed login attempt for user zach from 10.0.0.18
+2026-09-01 10:48:11 ERROR Failed login attempt for user zach from 10.0.0.18
+2026-09-01 10:49:01 ERROR Failed login attempt for user zach from 10.0.0.18
+2026-09-01 10:53:39 INFO User bob logged in successfully from 10.0.0.12
+2026-09-01 10:56:49 INFO User bob logged in successfully from 10.0.0.12
+2026-09-01 11:00:13 INFO User alice updated profile from 192.168.1.15
+2026-09-01 11:03:15 INFO User alice logged in successfully from 192.168.1.15
+2026-09-01 11:05:23 INFO User alice updated profile from 192.168.1.15
+2026-09-01 11:08:25 INFO User bob accessed dashboard from 10.0.0.12
+2026-09-01 11:11:10 INFO User diana downloaded report from 10.0.0.18
+2026-09-01 11:14:01 ERROR Authentication service returned an unexpected error from 192.168.1.15
+2026-09-01 11:14:33 WARNING User charlie authentication token expired from 192.168.1.25
+2026-09-01 11:15:32 WARNING User charlie authentication token expired from 192.168.1.25
+2026-09-01 11:18:19 ERROR User diana failed to access requested resource from 10.0.0.18
+2026-09-01 11:19:57 ERROR User diana failed to access requested resource from 10.0.0.18
+2026-09-01 11:23:11 INFO User zach logged out from 192.168.1.10
+2026-09-01 11:24:09 INFO User diana downloaded report from 10.0.0.18
+2026-09-01 11:26:30 INFO User bob logged in successfully from 10.0.0.12
+2026-09-01 11:28:56 INFO User zach logged in successfully from 192.168.1.10
+2026-09-01 11:30:33 WARNING User admin attempted access to restricted resource from 172.16.0.44
+2026-09-01 11:31:48 WARNING User admin attempted access to restricted resource from 172.16.0.44
+2026-09-01 11:32:45 ERROR Authentication service returned an unexpected error from 192.168.1.15
+2026-09-01 11:35:55 INFO User diana downloaded report from 10.0.0.18
+2026-09-01 11:39:08 WARNING User admin attempted access to restricted resource from 172.16.0.44
+2026-09-01 11:42:13 INFO User charlie accessed dashboard from 192.168.1.25
+2026-09-01 11:43:22 INFO User zach logged out from 192.168.1.10
+2026-09-01 11:44:33 WARNING User admin attempted access to restricted resource from 172.16.0.44
+2026-09-01 11:47:18 INFO User zach logged in successfully from 192.168.1.10
+2026-09-01 11:50:21 INFO User zach logged out from 192.168.1.10
+2026-09-01 11:52:56 INFO User zach logged in successfully from 192.168.1.10
+2026-09-01 11:53:54 INFO User zach logged out from 192.168.1.10
+2026-09-01 11:55:42 INFO User charlie accessed dashboard from 192.168.1.25
+2026-09-01 11:56:26 INFO User charlie accessed dashboard from 192.168.1.25
+2026-09-01 11:59:26 ERROR Failed login attempt for user alice from 10.0.0.12
+2026-09-01 11:59:51 ERROR Failed login attempt for user alice from 10.0.0.12
+2026-09-01 12:00:16 ERROR Failed login attempt for user alice from 10.0.0.12
+
+2026-09-01 12:00:41 ERROR Failed login attempt for user alice from 10.0.0.12
+2026-09-01 12:01:06 ERROR Failed login attempt for user alice from 10.0.0.12
+2026-09-01 12:01:31 ERROR Failed login attempt for user alice from 10.0.0.12
+2026-09-01 12:01:56 ERROR Failed login attempt for user alice from 10.0.0.12
+2026-09-01 12:02:21 ERROR Failed login attempt for user alice from 10.0.0.12
+2026-09-01 12:10:31 INFO User alice logged in successfully from 192.168.1.15
+2026-09-01 12:13:20 ERROR Authentication service returned an unexpected error from 192.168.1.15
+2026-09-01 12:14:22 ERROR User diana failed to access requested resource from 10.0.0.18
+2026-09-01 12:15:39 INFO User bob logged in successfully from 10.0.0.12
+2026-09-01 12:18:25 WARNING User admin attempted access to restricted resource from 172.16.0.44
+2026-09-01 12:19:52 INFO User diana downloaded report from 10.0.0.18
+2026-09-01 12:22:52 ERROR Authentication service returned an unexpected error from 192.168.1.15
+2026-09-01 12:25:25 INFO User charlie accessed dashboard from 192.168.1.25
+2026-09-01 12:27:01 ERROR Database connection failed for user admin from 192.168.1.10
+2026-09-01 12:29:05 INFO User alice updated profile from 192.168.1.15
+2026-09-01 12:31:25 INFO User bob accessed dashboard from 10.0.0.12
+2026-09-01 12:34:22 INFO User bob accessed dashboard from 10.0.0.12
+2026-09-01 12:35:37 INFO User charlie accessed dashboard from 192.168.1.25
+2026-09-01 12:37:19 INFO User alice logged in successfully from 192.168.1.15
+2026-09-01 12:39:30 INFO User zach logged in successfully from 192.168.1.10
+
+# End of sample log
 

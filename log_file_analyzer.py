@@ -144,18 +144,51 @@ def building_failed_login_data():
 
 ## BRUTE FORCE CHECK ##
 def detect_brute_force():
+
+    alerts = []
+
     ## .items() retrieves dictionary items ##
     for ip, data in failed_logins_by_ip.items():
 
         timestamps = data["timestamps"]
 
         for start in range(len(timestamps) - FAILED_ATTEMPT_THRESHOLD + 1):
+
             time_diff = timestamps[start + FAILED_ATTEMPT_THRESHOLD - 1] - timestamps[start]
 
             if time_diff <= FIVE_MINS:
-                print(
-                    f"Potential brute force attempt detected from {ip}: "
-                    f"{data['count']} failed attempts between {timestamps[start]} and {timestamps[start + FAILED_ATTEMPT_THRESHOLD - 1]}.")
+
+                pull_alert = {
+                    "type": "Potential Brute Force",
+                    "ip_address": ip,
+                    "failed_attempts": FAILED_ATTEMPT_THRESHOLD,
+                    "start_time": timestamps[start],
+                    "end_time": timestamps[start + FAILED_ATTEMPT_THRESHOLD - 1]
+                }
+                
+                alerts.append(pull_alert)
+    return alerts
+
+def get_alerts():
+    brute_force_alerts = detect_brute_force()
+
+    return brute_force_alerts
+
+
+def generate_report():
+    alerts = get_alerts()
+
+    report = {
+        "total_entries": len(log_entries),
+        "info_count": info_count,
+        "warning_count": warning_count,
+        "error_count": error_count,
+        "failed_logins_by_ip": failed_logins_by_ip,
+        "alerts": alerts
+    }
+
+    return report
+
 
 ### MAIN ###
 def main():
@@ -169,6 +202,30 @@ def main():
             if entry is None:
                 continue
             store_log_entry(entry)
+
+    building_failed_login_data()
+
+    brute_force_alerts = get_alerts()
+    report = generate_report()
+
+    if report:
+        print("\nLOG FILE ANALYSIS REPORT:")
+
+        print(f"\nTotal log entries: {report['total_entries']}")
+        print(f"INFO count: {report['info_count']}")
+        print(f"WARNING count: {report['warning_count']}")
+        print(f"ERROR count: {report['error_count']}")
+        print("\nSecurity Alerts")
+
+        if report["alerts"]:
+            for alert in report["alerts"]:
+                print(f"ALERT: {alert['type']} detected from IP "
+                    f"{alert['ip_address']} with "
+                    f"{alert['failed_attempts']} failed attempts between "
+                    f"{alert['start_time']} and {alert['end_time']}."
+                )
+        else:
+            print("\nNo alerts detected.")
 
 
 

@@ -191,11 +191,13 @@ def generate_report():
 
 
 ### MAIN ###
-def main():
-    ## adding portability for reading the log file ##
-    LOG_FILE = Path(__file__).parent / "sample.log"
+def main(file_path):
 
-    with open(LOG_FILE, "r") as file:
+    ## adding portability for reading the log file ##
+    ## not needed with GUI, but useful for testing ##
+    # LOG_FILE = Path(__file__).parent / "sample.log"
+
+    with open(file_path, "r") as file:
         for line in file:
             entry = parse_log_line(line)
 
@@ -227,15 +229,11 @@ def main():
         else:
             print("\nNo alerts detected.")
 
+    return report
+
 
 
 #####################################
 
 
-main()
-
-
-
-
-
-
+#main()

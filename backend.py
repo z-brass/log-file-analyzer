@@ -144,29 +144,61 @@ def building_failed_login_data():
 
 ## BRUTE FORCE CHECK ##
 def detect_brute_force():
+    ### new feature: once brute force is detected, we will continue grouping failed attempts into the same incident 
+    ### until there is a gap of more than 5 minutes between consecutive failed attempts. 
+    ### This should help reduce the number of alerts for every incident 
 
     alerts = []
 
     ## .items() retrieves dictionary items ##
     for ip, data in failed_logins_by_ip.items():
 
-        timestamps = data["timestamps"]
+        timestamps = sorted(data["timestamps"])
 
-        for start in range(len(timestamps) - FAILED_ATTEMPT_THRESHOLD + 1):
+        start = 0
+        
+        while start <= len(timestamps) - FAILED_ATTEMPT_THRESHOLD:
 
-            time_diff = timestamps[start + FAILED_ATTEMPT_THRESHOLD - 1] - timestamps[start]
+            end = start + FAILED_ATTEMPT_THRESHOLD - 1
+
+            time_diff = timestamps[end] - timestamps[start]
+
+
+            ### the idea: if that gap is still within 5 minutes, we continue to the next timestamp and check again. 
+            
+            # 10:04 (current)
+            # 10:05 (next)
+            
+            ### gap = 1 minute
+            ### Therefore, check next timestamp
 
             if time_diff <= FIVE_MINS:
 
+                incident_end = end
+
+                while incident_end + 1 < len(timestamps):
+                    next_time_diff = (
+                        timestamps[incident_end + 1] - timestamps[incident_end]
+                    )
+
+                    if next_time_diff <= FIVE_MINS:
+                        incident_end += 1
+                    else:
+                        break
+                    
                 pull_alert = {
                     "type": "Potential Brute Force",
                     "ip_address": ip,
-                    "failed_attempts": FAILED_ATTEMPT_THRESHOLD,
+                    "failed_attempts": incident_end - start + 1,
                     "start_time": timestamps[start],
-                    "end_time": timestamps[start + FAILED_ATTEMPT_THRESHOLD - 1]
+                    "end_time": timestamps[incident_end]
                 }
                 
                 alerts.append(pull_alert)
+                start = incident_end + 1
+            
+            else:
+                start += 1
     return alerts
 
 def get_alerts():
@@ -189,6 +221,17 @@ def generate_report():
 
     return report
 
+def reset_global_data():
+    global log_entries, info_count, warning_count, error_count, failed_logins_by_ip
+
+    log_entries.clear()
+    failed_logins_by_ip.clear()
+    info_count = 0
+    warning_count = 0
+    error_count = 0
+
+
+
 
 ### MAIN ###
 def main(file_path):
@@ -196,6 +239,8 @@ def main(file_path):
     ## adding portability for reading the log file ##
     ## not needed with GUI, but useful for testing ##
     # LOG_FILE = Path(__file__).parent / "sample.log"
+
+    reset_global_data()
 
     with open(file_path, "r") as file:
         for line in file:

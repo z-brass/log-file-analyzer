@@ -1,7 +1,7 @@
 import tkinter as tk
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, messagebox, ttk
 
-from log_file_analyzer import main
+from backend import main
 
 ## GUI Goal ##
 '''
@@ -68,7 +68,26 @@ def analyze_file():
     warning_count_var.set(report["warning_count"])
     error_count_var.set(report["error_count"]) 
 
-##### GUI LAYOUT #####
+    ## Delete every thing from the beginning ("1.0") to the end (tk.END) of the text box ##
+    alerts_text.delete("1.0", tk.END)
+
+    if report["alerts"]:
+        for alert in report["alerts"]:
+            alerts_text.insert(
+                tk.END, 
+                f"ALERT: {alert['type']} detected from IP "
+                f"{alert['ip_address']} with "
+                f"{alert['failed_attempts']} failed attempts between " 
+                f"{alert['start_time']} and {alert['end_time']}.\n\n" # < -- added a new line + space after each alert for better readability
+            )
+    else:
+        alerts_text.insert(tk.END, "No security alerts detected.")
+
+
+
+##########################        GUI LAYOUT            ############################
+
+
 file_frame = tk.Frame(root)
 file_frame.pack(pady=25)
 
@@ -132,6 +151,58 @@ tk.Label(error_frame,
 tk.Label(error_frame,
             textvariable=error_count_var,
             font=("Arial", 12)).pack(side=tk.LEFT, padx=5)
+
+
+## SECURITY ALERTS FRAME ##
+
+'''
+Security Alerts 
+______________________________________________________
+| ALERT: Potential Brute Force detected from IP...   |
+|                                                    |
+| ALERT: Potential Brute Force detected from IP...   |
+|                                                    |
+|____________________________________________________|
+'''
+
+alerts_frame = tk.Frame(results_frame)
+alerts_frame.pack(pady=20)
+
+alerts_title = tk.Label(
+    alerts_frame, 
+    text="Security Alerts", 
+    font=("Arial", 14, "bold"))
+
+alerts_title.pack()
+
+## ALERTS TEXT BOX ##
+alerts_text = tk.Text(
+    alerts_frame,
+    height=10,
+    width=100,
+    wrap=tk.WORD,
+    #state=tk.DISABLED,
+    font=("Arial", 12)
+)
+
+alerts_text.pack(side=tk.LEFT, padx=10)
+
+## SCROLLBAR ##
+alerts_scrollbar = tk.Scrollbar(
+    alerts_frame,
+    command=alerts_text.yview
+)
+
+alerts_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+## CONFIGURE SCROLLBAR ##
+alerts_text.config(yscrollcommand=alerts_scrollbar.set)
+
+
+
+
+
+
 
 
 
